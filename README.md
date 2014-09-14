@@ -1,0 +1,1 @@
+# SquatConf website, not that much for now, more to come.
