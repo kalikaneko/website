@@ -96,17 +96,82 @@ process.chdir = function (dir) {
 });
 
 },{}],3:[function(require,module,exports){
+module.exports = require('./lib/valid-email');
+},{"./lib/valid-email":4}],4:[function(require,module,exports){
+/*!
+ * Valid Email
+ * Copyright(c) 2013 John Henry
+ * MIT Licensed
+ */
+
+/**
+ * Valid-Email:
+ *
+ * An alternative to using a regular expression to validate email.
+ * Inspired by: 
+ *      http://stackoverflow.com/questions/997078/email-regular-expression
+ *      http://stackoverflow.com/questions/201323/using-a-regular-expression-to-validate-an-email-address
+ *
+ * Examples:
+ *     console.log(require('valid-email')('john@iamjohnhenry.com'))//#true
+ *     console.log(require('valid-email')('iamjohnhenry.com'))//#false
+ *
+ * @param {String} email 
+ * // potential email address
+ * @return {Boolean}
+ * @api public
+ */
+module.exports = function valid(email){
+    var at = email.search("@");
+    if (at <0) return false;
+    var user = email.substr(0, at);
+    var domain = email.substr(at+1);
+    var userLen = user.length;
+    var domainLen = domain.length;
+    if (userLen < 1 || userLen > 64) return false;// user part length exceeded
+    if (domainLen < 1 || domainLen > 255) return false;// domain part length exceeded
+    if (user.charAt(0) === '.' || user.charAt(userLen-1) === '.') return false;// user part starts or ends with '.'
+    if (user.match(/\.\./)) return false;// user part has two consecutive dots
+    if (!domain.match(/^[A-Za-z0-9.-]+$/)) return false;// character not valid in domain part
+    if (domain.match( /\\.\\./)) return false;// domain part has two consecutive dots
+    if (!user.replace("\\\\","").match(/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/)) if (!user.replace("\\\\","").match(/^"(\\\\"|[^"])+"$/)) return false
+    return true;
+}
+},{}],5:[function(require,module,exports){
 (function (process){
 var ready = require('domready')
+  , check_email = require('valid-email')
 
 process.nextTick(function() {
   ready(function() {
 
-console.log('ready')
+    var form  = document.getElementById('signup-form')
+      , input_email = ''
 
+    for (var n = 0, l = form.childNodes.length; n < l; n++) {
+      var el = form.childNodes[n]
+console.dir(el)
+      if (el.nodeName === 'INPUT' && el.name === 'email')
+        input_email = el.nodeValue
+    }
+
+    document
+      .getElementById("signup-form")
+      .addEventListener("click", function() {
+        if (input_email) {
+          var is_valid = check_email(input_email)
+          if (is_valid) {
+            alert('got it, thanks '+ input_email)
+            form.submit()
+          } else {
+            input_email = ''
+            alert("that doesn't look like an email address, please try again...")
+          }
+        }
+      })
   })
 })
 
 
 }).call(this,require('_process'))
-},{"_process":1,"domready":2}]},{},[3]);
+},{"_process":1,"domready":2,"valid-email":3}]},{},[5]);
