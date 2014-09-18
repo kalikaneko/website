@@ -32,4 +32,5 @@ process.on('uncaughtException', function (err) {
 })
 
 server.listen(port)
-console.log('server started on port '+ port)
+console.log('['+ process.pid +'] server started on port '+ port)
+console.log('(use ctrl+c to stop server)')
