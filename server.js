@@ -14,7 +14,8 @@ function handler(req, res) {
 
   if (/^\/email\?/.test(req.url)) {
     var params = require('url').parse(req.url, true)
-    console.log('got email:', params.query)
+    if (params && params.query.email)   // @TODO: validate input
+      console.log('got email:', params.query)
     res.statusCode = 302
     res.setHeader('Location', '/')
     return res.end()

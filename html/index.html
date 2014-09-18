@@ -23,14 +23,15 @@
       <br /><br />
 
       <ul class="nav nav-list">
-      <form method="GET" action="http://clevo:8000/email">
+      <!-- WARNING: This only works for development system (localhost) -->
+      <form method="GET" action="http://localhost:8000/email">
         <fieldset>
           <legend>JOIN US</legend>
           <label class="text-info">Enter your email..</label>
           <input type="text" name="email">
           <span class="help-block">we'll send you info about future events</span>
           <label class="checkbox text-info">
-            <input type="checkbox" name="paris"> Nov 2014 (Paris)
+            <input type="checkbox" name="paris"> Paris Nov.2014?
           </label>
           <button type="submit" class="btn">Send</button>
         </fieldset>
