@@ -15,7 +15,3 @@ results
 
 npm-debug.log
 node_modules
-
-assets/js/email.js
-html/index.html
-html/assets/*

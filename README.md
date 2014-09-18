@@ -1,1 +1,3 @@
-# SquatConf website, not that much for now, more to come.
+# SquatConf website. 
+
+```npm i && npm start```
