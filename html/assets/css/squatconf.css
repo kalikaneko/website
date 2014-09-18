@@ -1,3 +1,31 @@
 .btn{background-color: #fff}
 .leftCol{padding-top: 15px;}
 .page-header pre {margin-bottom: 0;}
+.formCont{
+  border: 2px solid #000000;
+  -webkit-box-shadow: 0 0 0 5px, 11px 13px 0 4px black;
+  -moz-box-shadow: 0 0 0 5px, 11px 13px 0 4px black;
+  box-shadow: 0 0 0 5px, 11px 13px 0 4px black;
+  background: #bbbbbb;
+  padding: 10px 15px;
+  margin: 10px 5px;
+  margin-left: -5px;
+}
+input{width: 100%;}
+
+/*mq madness*/
+.maxW, .dskW,.tblW{display:none;}
+
+@media (min-width: 1200px) {
+  .maxW{display:block;}
+}
+@media (min-width: 980px) and (max-width: 1199px) {
+  .dskW{display:block;}
+}
+@media (min-width: 768px) and (max-width: 979px) {}
+@media (max-width: 767px) {}
+@media (max-width: 480px) {}
+@media (max-width: 979px) {
+  .tblW{display:block;}
+}
+@media (min-width: 980px) {}
