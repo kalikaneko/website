@@ -15,15 +15,17 @@ process.nextTick(function() {
 
     document
       .getElementById("signup-form")
-      .addEventListener("click", function() {
-        if (input_email && input_email.value) {
-          var is_valid = check_email(input_email.value)
-          if (is_valid) {
-            alert('got it, thanks '+ input_email.value)
-            form.submit()
-          } else {
-            input_email.value = ''
-            alert("that doesn't look like an email address, please try again...")
+      .addEventListener("click", function(e) {
+        if (e.srcElement.nodeName === 'BUTTON') {
+          if (input_email && input_email.value) {
+            var is_valid = check_email(input_email.value)
+            if (is_valid) {
+              alert('got it, thanks '+ input_email.value)
+              form.submit()
+            } else {
+              input_email.value = ''
+              alert("that doesn't look like an email address,\nplease try again...")
+            }
           }
         }
       })
