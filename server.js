@@ -6,6 +6,7 @@ var nodemailer = require('nodemailer')
   , fs = require('fs')
   , re = new RegExp('\.js$', 'i')
   , port = process.env.PORT || /*80*/ 8000
+  , rn = require('./src/rng')
 
 function handler(req, res) {
 
@@ -14,17 +15,31 @@ function handler(req, res) {
   else if (re.test(req.url))
     res.setHeader('Content-Type', 'application/javascript')
 
+  if (/^\/confirm\?/.test(req.url)) {
+
+    // @TODO
+    // compare submitted token with the token stored in our database.
+
+    res.statusCode = 302
+    res.setHeader('Location', '/')
+    return res.end()
+  }
+
   if (/^\/email\?/.test(req.url)) {
     var params = require('url').parse(req.url, true)
     if (params && params.query.email) {
 
       /*
+      var to_addr = params.query.email // @NOTE:
+                                           // Q: do we trust the user input ?
+                                           // A: FUCK NO !!
+
       var opts = {
         from: 'news-mailer@squatconf.eu',
-        to: params.query.email,
+        to: to_addr,
         subject: "Hello, everyone is welcome at SquatConf..",
         text: 'Please verify that you wish to signup by following this link\n'
-            + '[##> link here <##]\n\n'
+            + 'http://squatconf.eu/confirm?email='+ to_addr +'&token='+ rn() '\n\n'
             + 'You can ignore this message if you DID NOT request to signup at our website\n'
             + 'http://squatconf.eu\n\n'
             + 'next event is in Paris, we hope to see you there !!\n'
@@ -36,7 +51,7 @@ function handler(req, res) {
       })
       */
 
-      console.log('got email:', params.query)
+      console.log(' got email:', params.query)
     }
     res.statusCode = 302
     res.setHeader('Location', '/')
