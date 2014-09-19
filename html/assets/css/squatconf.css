@@ -12,6 +12,8 @@
   margin-left: -5px;
 }
 .input{width: 100%;}
+#status-msg.info{color: black}
+#status-msg.error{color: red}
 
 /*mq madness*/
 .maxW, .dskW,.tblW{display:none;}

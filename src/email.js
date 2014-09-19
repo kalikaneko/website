@@ -6,6 +6,7 @@ process.nextTick(function() {
 
     var form  = document.getElementById('signup-form')
       , input_email = ''
+      , status_msg  = document.getElementById('status-msg')
 
     for (var n = 0, l = form.childNodes[1].childNodes.length; n < l; n++) {
       var el = form.childNodes[1].childNodes[n]
@@ -20,11 +21,16 @@ process.nextTick(function() {
           if (input_email && input_email.value) {
             var is_valid = check_email(input_email.value)
             if (is_valid) {
-              alert('got it, thanks '+ input_email.value)
-              form.submit()
+              status_msg.className = 'info'
+              status_msg.innerHTML = "Got it, thanks"
+              setTimeout(function() { form.submit() }, 600)
             } else {
               input_email.value = ''
-              alert("that doesn't look like an email address,\nplease try again...")
+              e.preventDefault()
+              status_msg.className = 'error'
+              status_msg.innerHTML = "that doesn't look like an email address,"
+                                     + "<br />please try again..."
+              setTimeout(function() { status_msg.innerHTML = '&nbsp;' }, 2000)
             }
           }
         }
