@@ -5,6 +5,8 @@ var server = require('http').createServer(handler)
   , rn = require('./src/rng')
   , fs = require('fs')
   , re = new RegExp('\.js$', 'i')
+  , ip = require('./src/ip-trace')
+  , db = require('level')('./db/squatconf', { valueEncoding: 'json' })
   , port = process.env.PORT || /*80*/ 8000
 
 function handler(req, res) {
@@ -34,13 +36,17 @@ function handler(req, res) {
       obj.token = rn()
       obj.verified = false
       obj.events = { paris: params.query.paris ? true : false }
-      obj.trace = (req.headers['x-forwarded-for'] || '').split(',')
-                      || [ req.connection.remoteAddress ]
+      obj.trace = ip(req)
 
-      var db = require('level')('./db/squatconf', { valueEncoding: 'json' })
       db.put(email, obj, function(err) {
-        if (err) cb(err)
+        if (err) throw err
+
         // else.. db updated OK
+        db.get(email, function (err, value) {
+          if (err) return console.error('Ooops!', err)
+
+          console.log('> '+ email, value)
+        })
       })
 
       var nodemailer  = require('nodemailer')
@@ -53,14 +59,16 @@ function handler(req, res) {
           from   : config.email.from
         , to     : email
         , subject: config.email.subject
-        , text   : config.email.bodyText.replace(/\%link\%/, link)
+      //, text   : config.email.bodyText.replace(/\%link\%/, link)
       }
-
+console.log('mockmail sent...', opts)
+      /*
       transporter.sendMail(opts, function(err, data) {
         if (err) throw err
         // validation email sent
         console.log('email sent..', data)
       })
+      */
     }
 
     res.statusCode = 302
