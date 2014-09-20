@@ -3,10 +3,11 @@
 var nodemailer = require('nodemailer')
   , transporter = nodemailer.createTransport()
   , server = require('http').createServer(handler)
+  , email = require('./config.json').email
+  , rn = require('./src/rng')
   , fs = require('fs')
   , re = new RegExp('\.js$', 'i')
   , port = process.env.PORT || /*80*/ 8000
-  , rn = require('./src/rng')
 
 function handler(req, res) {
 
@@ -31,20 +32,18 @@ function handler(req, res) {
 
       /*
       var to_addr = params.query.email // @NOTE:
-                                           // Q: do we trust the user input ?
-                                           // A: FUCK NO !!
+                                       //     Q: do we trust the user input ?
+                                       //     A: FUCK NO !!
+        , url  = 'http://squatconf.eu/confirm'
+        , link = url +'?email='+ to_addr +'&token='+ rn() +'\n\n'
 
       var opts = {
-        from: 'news-mailer@squatconf.eu',
-        to: to_addr,
-        subject: "Hello, everyone is welcome at SquatConf..",
-        text: 'Please verify that you wish to signup by following this link\n'
-            + 'http://squatconf.eu/confirm?email='+ to_addr +'&token='+ rn() '\n\n'
-            + 'You can ignore this message if you DID NOT request to signup at our website\n'
-            + 'http://squatconf.eu\n\n'
-            + 'next event is in Paris, we hope to see you there !!\n'
-            + 'kind regards from the team,\nSquatConf Paris 2014'
+          from   : email.from
+        , to     : to_addr
+        , subject: email.subject
+        , text   : email.bodyText.replace(/\%link\%/, link)
       }
+
       transporter.sendMail(opts, function(err, data) {
         if (err) return console.error('email problem !', err)
         console.log('email sent', data)

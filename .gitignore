@@ -13,7 +13,7 @@ pids
 logs
 results
 
-npm-debug.log
 node_modules
 html/assets/js/email*
+/config.json
 
