@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-var nodemailer = require('nodemailer')
-  , transporter = nodemailer.createTransport()
-  , server = require('http').createServer(handler)
-  , email = require('./config.json').email
+var server = require('http').createServer(handler)
+  , sanitize = require('xss-escape')
   , rn = require('./src/rng')
   , fs = require('fs')
   , re = new RegExp('\.js$', 'i')
@@ -29,29 +27,42 @@ function handler(req, res) {
   if (/^\/email\?/.test(req.url)) {
     var params = require('url').parse(req.url, true)
     if (params && params.query.email) {
+      //console.log('got email:', params.query)
 
-      /*
-      var to_addr = params.query.email // @NOTE:
-                                       //     Q: do we trust the user input ?
-                                       //     A: FUCK NO !!
+      var obj = {}
+        , email  = sanitize(params.query.email)
+      obj.token = rn()
+      obj.verified = false
+      obj.events = { paris: params.query.paris ? true : false }
+      obj.trace = (req.headers['x-forwarded-for'] || '').split(',')
+                      || [ req.connection.remoteAddress ]
+
+      var db = require('level')('./db/squatconf', { valueEncoding: 'json' })
+      db.put(email, obj, function(err) {
+        if (err) cb(err)
+        // else.. db updated OK
+      })
+
+      var nodemailer  = require('nodemailer')
+        , transporter = nodemailer.createTransport()
+        , config = require('./config.json')
         , url  = 'http://squatconf.eu/confirm'
-        , link = url +'?email='+ to_addr +'&token='+ rn() +'\n\n'
+        , link = url +'?email='+ email +'&token='+ obj.token +'\n\n'
 
       var opts = {
-          from   : email.from
-        , to     : to_addr
-        , subject: email.subject
-        , text   : email.bodyText.replace(/\%link\%/, link)
+          from   : config.email.from
+        , to     : email
+        , subject: config.email.subject
+        , text   : config.email.bodyText.replace(/\%link\%/, link)
       }
 
       transporter.sendMail(opts, function(err, data) {
-        if (err) return console.error('email problem !', err)
-        console.log('email sent', data)
+        if (err) throw err
+        // validation email sent
+        console.log('email sent..', data)
       })
-      */
-
-      console.log(' got email:', params.query)
     }
+
     res.statusCode = 302
     res.setHeader('Location', '/')
     return res.end()
@@ -68,5 +79,6 @@ process.on('uncaughtException', function (err) {
 })
 
 server.listen(port)
-console.error('['+ process.pid +'] server started on port '+ port)
-console.error('(use ctrl+c to stop server)')
+console.log('['+ process.pid +'] server started on port '+ port)
+console.log('(use Ctrl+c to stop the server)')
+
