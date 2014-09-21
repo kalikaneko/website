@@ -9,6 +9,15 @@ var server = require('http').createServer(handler)
   , db = require('level')('./db/squatconf', { valueEncoding: 'json' })
   , port = process.env.PORT || /*80*/ 8000
 
+// create the level db folder if it does not exists
+if(!fs.existsSync('./db/squatconf')){
+     fs.mkdirSync('./db/squatconf', 0766, function(err){
+       if(err){
+         console.log(err);
+       }
+     });
+ }
+
 function handler(req, res) {
 
   // process incoming requests.
