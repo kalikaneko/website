@@ -1,5 +1,6 @@
 var ready = require('domready')
   , check_email = require('valid-email')
+  , loadsvg = require('load-svg')
 
 process.nextTick(function() {
   ready(function() {
@@ -7,6 +8,11 @@ process.nextTick(function() {
     var form  = document.getElementById('signup-form')
       , input_email = ''
       , status_msg  = document.getElementById('status-msg')
+      , logoCont = document.getElementById('logoCont')
+
+      loadsvg('/assets/img/squatconf_baguette.svg', function (err, svg) {
+          logoCont.appendChild(svg);
+      });
 
     for (var n = 0, l = form.childNodes[1].childNodes.length; n < l; n++) {
       var el = form.childNodes[1].childNodes[n]
