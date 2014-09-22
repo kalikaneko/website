@@ -3,7 +3,8 @@ var join = require('path').join
   , cwd  = process.cwd()
 
 module.exports = require('rc')(name, {
-    db_path: join(cwd, 'db', name)
+    db_opts: { valueEncoding: 'json' }
+  , db_path: join(cwd, 'db', name)
   , port: 8000
   , host: "squatconf.eu"
   , email: {

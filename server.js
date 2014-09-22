@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-var http = require('http')
+var fs = require('fs')
+  , http = require('http')
   , stack = require('stack')
   , route = require('tiny-route')
   , assets = require('ecstatic')
   , join = require('path').join
-  , fs = require('fs')
-  , port = process.env.PORT || require('./config').port
+  , config = require('./config')
+  , db = require('level')(config.db_path, config.db_opts)
+  , port = process.env.PORT || config.port
 
 // create the level db folder if it does not exists
 if(!fs.existsSync('./db/squatconf')){
@@ -18,8 +20,8 @@ if(!fs.existsSync('./db/squatconf')){
  }
 
 var app = stack(
-    route('/email', require('./src/email-submit'))
-  , route('/confirm', require('./src/email-confirm'))
+    route('/email', require('./src/email-submit')(db))
+  , route('/confirm', require('./src/email-confirm')(db))
   , assets(join(__dirname, 'html'))
 )
 
