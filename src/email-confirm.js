@@ -8,13 +8,12 @@ module.exports = function(db) {
     var params = require('url').parse(req.url, true)
 
     if (params && params.query.email && params.query.token) {
-      //console.log('got token:', params.query)
 
       var email = sanitize(params.query.email)
         , token = sanitize(params.query.token)
 
       db.get(email, function(err, obj) {
-        if (err) next(err)
+        if (err) return console.error(err)
 
         // db read OK..
         if (obj && obj.token === token) {
@@ -22,7 +21,7 @@ module.exports = function(db) {
           obj.trace = obj.trace.concat(ip(req))
 
           db.put(email, obj, function(err) {
-            if (err) next(err)
+            if (err) return console.error(err)
 
             // db write OK..
             res.statusCode = 302
