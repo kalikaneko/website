@@ -57,6 +57,9 @@ module.exports = function(db) {
               return res.end()
             })
           })
+
+        } else {
+          error('already verified: '+ email)
         }
       }
 
