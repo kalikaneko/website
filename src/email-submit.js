@@ -19,42 +19,50 @@ module.exports = function(db) {
       var obj = {}
         , email  = sanitize(params.query.email)
 
-      console.log('got email:', params.query)
+      db.get(email, function(err, value) {
+        if ((err && err.type == 'NotFoundError') || ! value.verified) {
 
-      obj.token = rn()
-      obj.verified = false
-      obj.events = { paris: params.query.paris ? true : false }
-      obj.trace = ip(req)
+          console.log('got email:', params.query)
 
-      db.put(email, obj, function(err) {
-        if (err) return error(err)
+          obj.token = rn()
+          obj.verified = false
+          obj.events = { paris: params.query.paris ? true : false }
+          obj.trace = ip(req)
 
-        // db write OK..
-        var nodemailer  = require('nodemailer')
-          , transporter = nodemailer.createTransport()
-          , url  = config.host +'/confirm'
-          , qstr = '?email='+ email +'&token='+ obj.token
-          , link = url + qstr +'\n\n'
+          db.put(email, obj, function(err) {
+            if (err) return error(err)
 
-        var opts = {
-            from   : config.email.from
-          , to     : email
-          , subject: config.email.subject
-        //, link   : link
-          , text   : config.email.bodyText.replace(/\%link\%/, link)
+            // db write OK..
+            var nodemailer  = require('nodemailer')
+              , transporter = nodemailer.createTransport()
+              , url  = config.host +'/confirm'
+              , qstr = '?email='+ email +'&token='+ obj.token
+              , link = url + qstr +'\n\n'
+
+            var opts = {
+                from   : config.email.from
+              , to     : email
+              , subject: config.email.subject
+              , text   : config.email.bodyText.replace(/\%link\%/, link)
+            }
+
+            transporter.sendMail(opts, function(err, data) {
+              if (err) return error(err)
+
+              // validation email sent
+              console.log('email sent..', opts)
+
+              res.statusCode = 302
+              res.setHeader('Location', '/')
+              return res.end()
+            })
+          })
+
+        } else {
+          error('already verified: '+ email)
         }
+      }
 
-        transporter.sendMail(opts, function(err, data) {
-          if (err) return error(err)
-
-          // validation email sent
-          console.log('email sent..', opts)
-
-          res.statusCode = 302
-          res.setHeader('Location', '/')
-          return res.end()
-        })
-      })
     } else {
       error('invalid input: '+ JSON.stringify(params.query))
     }
