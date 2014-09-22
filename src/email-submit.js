@@ -7,6 +7,11 @@ module.exports = function(db) {
   return function (req, res, next) {
     req.resume()
 
+    function error(e) {
+      console.error(e)
+      return next(e || e.msg || 'ERROR')
+    }
+
     var params = require('url').parse(req.url, true)
 
     if (params && params.query.email) {
@@ -22,7 +27,7 @@ module.exports = function(db) {
       obj.trace = ip(req)
 
       db.put(email, obj, function(err) {
-        if (err) return console.error(err)
+        if (err) return error(err)
 
         // db write OK..
         var nodemailer  = require('nodemailer')
@@ -39,7 +44,7 @@ module.exports = function(db) {
         }
 
         transporter.sendMail(opts, function(err, data) {
-          if (err) return console.error(err)
+          if (err) return error(err)
 
           // validation email sent
           console.log('email sent..', opts)
@@ -49,9 +54,9 @@ module.exports = function(db) {
           return res.end()
         })
       })
+    } else {
+      error('invalid input: '+ JSON.stringify(params.query))
     }
-
-    if (next) return next()
   }
 }
 
