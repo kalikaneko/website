@@ -18,6 +18,12 @@ if(!fs.existsSync(config.db_path)){
      });
  }
 
+stack.errorHandler = function error(req, res, err) {
+  res.statusCode = 302
+  res.setHeader('Location', '/')
+  res.end()
+}
+
 var app = stack(
     route('/email', require('./src/email-submit')(db))
   , route('/confirm', require('./src/email-confirm')(db))
