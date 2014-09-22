@@ -32,8 +32,9 @@ module.exports = function(db) {
         // db write OK..
         var nodemailer  = require('nodemailer')
           , transporter = nodemailer.createTransport()
-          , url  = 'http://squatconf.eu/confirm'
-          , link = url +'?email='+ email +'&token='+ obj.token +'\n\n'
+          , url  = config.host +'/confirm'
+          , qstr = '?email='+ email +'&token='+ obj.token
+          , link = url + qstr +'\n\n'
 
         var opts = {
             from   : config.email.from

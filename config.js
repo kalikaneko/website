@@ -6,7 +6,7 @@ module.exports = require('rc')(name, {
     db_opts: { valueEncoding: 'json' }
   , db_path: join(cwd, 'db', name)
   , port: 8000
-  , host: "squatconf.eu"
+  , host: "http://test.squatconf.eu"
   , email: {
         from     : "no-reply@squatconf.eu"
       , subject  : "Hello, everyone is welcome at SquatConf.."
