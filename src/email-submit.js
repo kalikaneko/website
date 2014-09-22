@@ -10,10 +10,11 @@ module.exports = function(db) {
     var params = require('url').parse(req.url, true)
 
     if (params && params.query.email) {
-      console.log('got email:', params.query)
 
       var obj = {}
         , email  = sanitize(params.query.email)
+
+      console.log('got email:', params.query)
 
       obj.token = rn()
       obj.verified = false
@@ -21,7 +22,7 @@ module.exports = function(db) {
       obj.trace = ip(req)
 
       db.put(email, obj, function(err) {
-        if (err) next(err)
+        if (err) return console.error(err)
 
         // db write OK..
         var nodemailer  = require('nodemailer')
@@ -33,18 +34,20 @@ module.exports = function(db) {
             from   : config.email.from
           , to     : email
           , subject: config.email.subject
+        //, link   : link
           , text   : config.email.bodyText.replace(/\%link\%/, link)
         }
 
         transporter.sendMail(opts, function(err, data) {
-          if (err) throw err
-          // validation email sent
-          console.log('email sent..', data)
-        })
+          if (err) return console.error(err)
 
-        res.statusCode = 302
-        res.setHeader('Location', '/')
-        return res.end()
+          // validation email sent
+          console.log('email sent..', opts)
+
+          res.statusCode = 302
+          res.setHeader('Location', '/')
+          return res.end()
+        })
       })
     }
 
