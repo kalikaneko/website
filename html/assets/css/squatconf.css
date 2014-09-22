@@ -17,7 +17,6 @@
 .parisCont{
   background-color: #000;
   width: 100% !important;
-  margin: 0 auto;
   padding: 1em 0;
 }
 .parisCont svg{
@@ -35,7 +34,9 @@ margin: 0 auto;
   .dskW{display:block;}
 }
 @media (min-width: 768px) and (max-width: 979px) {}
-@media (max-width: 767px) {}
+@media (max-width: 767px) {
+  .parisCont svg{zoom: 0.6;}
+}
 @media (max-width: 480px) {}
 @media (max-width: 979px) {
   .tblW{display:block;}
