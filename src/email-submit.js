@@ -61,7 +61,7 @@ module.exports = function(db) {
         } else {
           error('already verified: '+ email)
         }
-      }
+      })
 
     } else {
       error('invalid input: '+ JSON.stringify(params.query))
