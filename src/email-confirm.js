@@ -1,5 +1,6 @@
 var sanitize = require('xss-escape')
   , ip = require('./ip-trace')
+  , axm = require('axm')
 
 module.exports = function(db) {
   return function (req, res, next) {
@@ -18,7 +19,12 @@ module.exports = function(db) {
         , token = sanitize(params.query.token)
 
       db.get(email, function(err, obj) {
-        if (err) return error(err)
+        if (err) {
+          axm.emit('error:error', {
+            err : err
+          });
+          return error(err)
+        }
 
         // db read OK..
         if (obj && ! obj.verified) {
@@ -28,7 +34,9 @@ module.exports = function(db) {
 
             db.put(email, obj, function(err) {
               if (err) return error(err)
-
+              axm.emit('user:register', {
+                email : email
+              });
               // db write OK..
               res.statusCode = 302
               res.setHeader('Location', '/verified.html')
