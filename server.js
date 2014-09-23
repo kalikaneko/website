@@ -6,6 +6,7 @@ var fs = require('fs')
   , route = require('tiny-route')
   , assets = require('ecstatic')
   , config = require('./config')
+  , axm = require('axm')
   , db = require('level')(config.db_path, config.db_opts)
   , port = process.env.PORT || config.port
 
@@ -34,6 +35,15 @@ process.on('uncaughtException', function (err) {
   console.error('Error at:', new Date)
   console.error(err.stack)
 })
+
+var amxEmit = function (txt) {
+console.log('amxEmit fired');
+axm.emit('test:logtest', {
+  text : txt,
+  email : 'thorustor@gmail.com'
+});
+}
+amxEmit();
 
 http.createServer(app).listen(port, function() {
   console.log('[PID='+ process.pid +'] server started on port '+ port)
