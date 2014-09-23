@@ -34,7 +34,7 @@ module.exports = function(db) {
 
             db.put(email, obj, function(err) {
               if (err) return error(err)
-              axm.emit('user:register', {
+              axm.emit('user:verify', {
                 email : email
               });
               // db write OK..

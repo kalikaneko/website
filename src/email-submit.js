@@ -1,6 +1,7 @@
 var sanitize = require('xss-escape')
   , rn = require('./rng')
   , ip = require('./ip-trace')
+  , axm = require('axm')
   , config = require('../config')
 
 module.exports = function(db) {
@@ -23,7 +24,9 @@ module.exports = function(db) {
         if ((err && err.type == 'NotFoundError') || ! value.verified) {
 
           console.log('got email:', params.query)
-
+          axm.emit('user:register', {
+            email : email
+          });
           obj.token = rn()
           obj.verified = false
           obj.events = { paris: params.query.paris ? true : false }
