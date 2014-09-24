@@ -10,9 +10,9 @@ process.nextTick(function() {
       , status_msg  = document.getElementById('status-msg')
       , logoCont = document.getElementById('logoCont')
 
-      loadsvg('/assets/img/squatconf_baguette.svg', function (err, svg) {
-          logoCont.appendChild(svg);
-      });
+    loadsvg('/assets/img/squatconf_baguette.svg', function (err, svg) {
+        logoCont.appendChild(svg);
+    });
 
     for (var n = 0, l = form.childNodes[1].childNodes.length; n < l; n++) {
       var el = form.childNodes[1].childNodes[n]
