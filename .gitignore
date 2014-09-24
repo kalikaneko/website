@@ -17,4 +17,5 @@ results
 node_modules
 html/assets/js/email*
 /config.json
+config.js
 
