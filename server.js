@@ -18,6 +18,7 @@ if(!fs.existsSync(config.db_path)){
      });
  }
 
+
 stack.errorHandler = function error(req, res, err) {
   res.statusCode = 302
   res.setHeader('Location', '/')
