@@ -25,6 +25,13 @@ max-width: 80%;
 margin: 0 auto;
 }
 
+.attribution {
+  width: 100%;
+  font-size: small;
+  text-align: center;
+  margin-top: 1em;
+}
+
 h2{white-space: normal;}
 
 /*mq madness*/
